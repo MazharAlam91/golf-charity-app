@@ -53,7 +53,6 @@ if (!name || !email || !password) {
 return alert("Please fill all fields ⚠️");
 }
 
-```
 try {
   await axios.post(`${API}/api/auth/register`, {
     name,
@@ -68,7 +67,6 @@ try {
   console.error(err);
   alert(err.response?.data?.msg || "Error ❌");
 }
-```
 
 };
 
@@ -114,7 +112,6 @@ return ( <div style={container}> <div style={card}> <h2>Register 📝</h2>
     </p>
   </div>
 </div>
-```
 
 );
 }
