@@ -57,7 +57,6 @@ const res = await axios.post(
 { email, password }
 );
 
-```
   localStorage.setItem("token", res.data.token);
   localStorage.setItem("user", JSON.stringify(res.data.user));
 
@@ -73,13 +72,11 @@ const res = await axios.post(
   console.error(err);
   alert("Login Failed ❌");
 }
-```
 
 };
 
 return ( <div style={container}> <div style={card}> <h2>Login 🔐</h2>
 
-```
     <input
       style={input}
       type="email"
@@ -111,7 +108,6 @@ return ( <div style={container}> <div style={card}> <h2>Login 🔐</h2>
     </p>
   </div>
 </div>
-```
 
 );
 }

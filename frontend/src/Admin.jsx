@@ -44,12 +44,10 @@ const res = await axios.get(`${API}/api/draw/admin-run`, {
 headers: { Authorization: `Bearer ${token}` },
 });
 
-```
   alert("Winner: " + res.data.winner.name);
 } catch {
   alert("Error ❌");
 }
-```
 
 };
 
@@ -93,7 +91,6 @@ return (
     Logout 🚪
   </button>
 </div>
-```
 
 );
 }

@@ -74,7 +74,6 @@ if (token) fetchScores();
 const handleAddScore = async () => {
 if (!value) return alert("Enter score ⚠️");
 
-```
 try {
   await axios.post(
     `${API}/api/score/add`,
@@ -87,7 +86,6 @@ try {
 } catch {
   alert("Error ❌");
 }
-```
 
 };
 
@@ -99,7 +97,6 @@ const res = await axios.post(
 { headers: { Authorization: `Bearer ${token}` } }
 );
 
-```
   const updatedUser = {
     ...user,
     subscription: res.data.subscription,
@@ -110,7 +107,6 @@ const res = await axios.post(
 } catch {
   alert("Upgrade failed ❌");
 }
-```
 
 };
 
@@ -122,14 +118,12 @@ const res = await axios.post(
 { headers: { Authorization: `Bearer ${token}` } }
 );
 
-```
   const updatedUser = { ...user, charity: res.data.charity };
   localStorage.setItem("user", JSON.stringify(updatedUser));
   window.location.reload();
 } catch {
   alert("Error ❌");
 }
-```
 
 };
 
@@ -139,7 +133,6 @@ const res = await axios.get(`${API}/api/draw`, {
 headers: { Authorization: `Bearer ${token}` },
 });
 
-```
   setDrawResult(res.data);
 
   const newParticipation = participation + 1;
@@ -158,7 +151,7 @@ headers: { Authorization: `Bearer ${token}` },
 } catch {
   alert("Draw failed ❌");
 }
-```
+
 
 };
 
@@ -171,7 +164,6 @@ return (
 <div style={{ minHeight: "100vh", background: "#f5f7fb", display: "flex", justifyContent: "center", alignItems: "center" }}>
 <div style={{ width: "420px", background: "#fff", padding: "25px", borderRadius: "12px", boxShadow: "0 5px 20px rgba(0,0,0,0.1)", textAlign: "center" }}>
 
-```
     <h2>Dashboard 🎉</h2>
     <h3>Welcome, {user?.name} 👋</h3>
 
@@ -237,7 +229,6 @@ return (
 
   </div>
 </div>
-```
 
 );
 }
