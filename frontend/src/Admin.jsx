@@ -1,141 +1,131 @@
-import { useEffect, useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import axios from "axios";
+import Dashboard from "./Dashboard";
+import Register from "./Register";
+import Admin from "./Admin";
 
-const btn = {
-  padding: "10px",
-  margin: "10px",
-  borderRadius: "8px",
-  border: "none",
-  cursor: "pointer",
-  fontWeight: "bold"
+// 🎨 styles
+const container = {
+minHeight: "100vh",
+background: "#f5f7fb",
+display: "flex",
+justifyContent: "center",
+alignItems: "center"
 };
 
-function Admin() {
-  const [users, setUsers] = useState([]);
-  const [winner, setWinner] = useState(null);
-  const [loading, setLoading] = useState(false);
+const card = {
+width: "350px",
+background: "#fff",
+padding: "25px",
+borderRadius: "12px",
+boxShadow: "0 5px 20px rgba(0,0,0,0.1)",
+textAlign: "center"
+};
 
-  const token = localStorage.getItem("token");
+const input = {
+width: "100%",
+padding: "10px",
+margin: "10px 0",
+borderRadius: "8px",
+border: "1px solid #ccc"
+};
 
-  let user = null;
-  try {
-    user = JSON.parse(localStorage.getItem("user"));
-  } catch {}
+const btn = {
+width: "100%",
+padding: "10px",
+borderRadius: "8px",
+border: "none",
+background: "#6366f1",
+color: "#fff",
+cursor: "pointer",
+fontWeight: "bold"
+};
 
-  // 🔒 Protect route
-  useEffect(() => {
-    if (!user?.isAdmin) {
-      window.location.href = "/dashboard";
-    }
-  }, []);
+// ================= LOGIN =================
+function Login() {
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const navigate = useNavigate();
 
-  // 👥 Fetch users
-  const fetchUsers = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/draw/users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUsers(res.data);
-    } catch {
-      alert("Not authorized ❌");
-    }
-  };
+// ✅ API BASE URL
+const API = import.meta.env.VITE_API_URL;
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+const handleLogin = async () => {
+try {
+const res = await axios.post(
+`${API}/api/auth/login`,
+{ email, password }
+);
 
-  // 🎲 Run draw
-  const runDraw = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get("http://localhost:5000/api/draw/admin-run", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+```
+  localStorage.setItem("token", res.data.token);
+  localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      setWinner(res.data.winner);
+  alert("Login Successful 🚀");
 
-    } catch {
-      alert("Error running draw ❌");
-    }
-    setLoading(false);
-  };
+  // 👨‍💼 ADMIN REDIRECT
+  if (res.data.user.isAdmin) {
+    navigate("/admin");
+  } else {
+    navigate("/dashboard");
+  }
 
-  // 🚪 Logout
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = "/";
-  };
+} catch (err) {
+  console.error(err);
+  alert("Login Failed ❌");
+}
+```
 
-  return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#f5f7fb",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center"
-    }}>
-      <div style={{
-        width: "400px",
-        background: "#fff",
-        padding: "25px",
-        borderRadius: "12px",
-        boxShadow: "0 5px 20px rgba(0,0,0,0.1)",
-        textAlign: "center"
-      }}>
+};
 
-        <h2>👨‍💼 Admin Panel</h2>
+return ( <div style={container}> <div style={card}> <h2>Login 🔐</h2>
 
-        {/* 🎲 DRAW BUTTON */}
-        <button
-          style={{ ...btn, background: "#6366f1", color: "#fff" }}
-          onClick={runDraw}
-          disabled={loading}
-        >
-          {loading ? "Running..." : "Run Global Draw 🎲"}
-        </button>
+```
+    <input
+      style={input}
+      type="email"
+      placeholder="Enter Email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+    />
 
-        {/* 🏆 WINNER DISPLAY */}
-        {winner && (
-          <div style={{
-            marginTop: "15px",
-            padding: "10px",
-            background: "#e6fffa",
-            borderRadius: "8px"
-          }}>
-            <h3>🏆 Winner</h3>
-            <p><b>{winner.name}</b></p>
-            <p>{winner.email}</p>
-          </div>
-        )}
+    <input
+      style={input}
+      type="password"
+      placeholder="Enter Password"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+    />
 
-        <hr />
+    <button style={btn} onClick={handleLogin}>
+      Login
+    </button>
 
-        <h3>All Users</h3>
+    <p style={{ marginTop: "15px" }}>
+      Don't have an account?{" "}
+      <span
+        style={{ color: "#6366f1", cursor: "pointer", fontWeight: "bold" }}
+        onClick={() => navigate("/register")}
+      >
+        Register
+      </span>
+    </p>
+  </div>
+</div>
+```
 
-        {users.length === 0 ? (
-          <p>No users found</p>
-        ) : (
-          users.map((u) => (
-            <p key={u._id}>
-              {u.name} | {u.email}
-            </p>
-          ))
-        )}
-
-        <hr />
-
-        {/* 🚪 LOGOUT */}
-        <button
-          style={{ ...btn, background: "red", color: "#fff" }}
-          onClick={handleLogout}
-        >
-          Logout 🚪
-        </button>
-
-      </div>
-    </div>
-  );
+);
 }
 
-export default Admin;
+// ================= APP ROUTES =================
+function App() {
+return ( <Routes>
+<Route path="/" element={<Login />} />
+<Route path="/register" element={<Register />} />
+<Route path="/dashboard" element={<Dashboard />} />
+<Route path="/admin" element={<Admin />} /> </Routes>
+);
+}
+
+export default App;
