@@ -46,7 +46,6 @@ const [password, setPassword] = useState("");
 
 const navigate = useNavigate();
 
-// ✅ API BASE URL
 const API = import.meta.env.VITE_API_URL;
 
 const handleRegister = async () => {
@@ -76,7 +75,6 @@ try {
 return ( <div style={container}> <div style={card}> <h2>Register 📝</h2>
 
 ```
-    {/* Name */}
     <input
       style={input}
       type="text"
@@ -85,7 +83,6 @@ return ( <div style={container}> <div style={card}> <h2>Register 📝</h2>
       onChange={(e) => setName(e.target.value)}
     />
 
-    {/* Email */}
     <input
       style={input}
       type="email"
@@ -94,7 +91,6 @@ return ( <div style={container}> <div style={card}> <h2>Register 📝</h2>
       onChange={(e) => setEmail(e.target.value)}
     />
 
-    {/* Password */}
     <input
       style={input}
       type="password"

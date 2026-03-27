@@ -42,15 +42,12 @@ Number(localStorage.getItem("winnings")) || 0
 
 const token = localStorage.getItem("token");
 
-// ✅ API BASE URL
 const API = import.meta.env.VITE_API_URL;
 
-// ✅ SAFE USER PARSE
 let user = null;
 try {
 user = JSON.parse(localStorage.getItem("user"));
-} catch (err) {
-console.log("User parse error:", err);
+} catch {
 user = null;
 }
 
@@ -58,7 +55,6 @@ useEffect(() => {
 if (!token) window.location.href = "/";
 }, [token]);
 
-// ✅ Fetch scores
 const fetchScores = async () => {
 try {
 const res = await axios.get(`${API}/api/score`, {
@@ -75,7 +71,6 @@ useEffect(() => {
 if (token) fetchScores();
 }, [token]);
 
-// ✅ Add score
 const handleAddScore = async () => {
 if (!value) return alert("Enter score ⚠️");
 
@@ -96,7 +91,6 @@ try {
 
 };
 
-// ✅ Upgrade plan
 const handleUpgrade = async (plan) => {
 try {
 const res = await axios.post(
@@ -120,7 +114,6 @@ const res = await axios.post(
 
 };
 
-// ✅ Charity
 const handleCharity = async () => {
 try {
 const res = await axios.post(
@@ -140,7 +133,6 @@ const res = await axios.post(
 
 };
 
-// ✅ Draw system (FIXED)
 const handleDraw = async () => {
 try {
 const res = await axios.get(`${API}/api/draw`, {
@@ -170,32 +162,17 @@ headers: { Authorization: `Bearer ${token}` },
 
 };
 
-// ✅ Logout
 const handleLogout = () => {
 localStorage.clear();
 window.location.href = "/";
 };
 
 return (
-<div style={{
-minHeight: "100vh",
-background: "#f5f7fb",
-display: "flex",
-justifyContent: "center",
-alignItems: "center"
-}}>
-<div style={{
-width: "420px",
-background: "#fff",
-padding: "25px",
-borderRadius: "12px",
-boxShadow: "0 5px 20px rgba(0,0,0,0.1)",
-textAlign: "center"
-}}>
+<div style={{ minHeight: "100vh", background: "#f5f7fb", display: "flex", justifyContent: "center", alignItems: "center" }}>
+<div style={{ width: "420px", background: "#fff", padding: "25px", borderRadius: "12px", boxShadow: "0 5px 20px rgba(0,0,0,0.1)", textAlign: "center" }}>
 
 ```
     <h2>Dashboard 🎉</h2>
-
     <h3>Welcome, {user?.name} 👋</h3>
 
     <p><b>Plan:</b> {user?.subscription?.plan}</p>
@@ -209,100 +186,52 @@ textAlign: "center"
 
     <hr />
 
-    {/* 💳 Plans */}
     {user?.subscription?.status !== "active" && (
       <>
-        <h4>Select Plan</h4>
-        <button style={btn} onClick={() => handleUpgrade("Monthly")}>
-          Monthly 💳
-        </button>
-        <button style={btn} onClick={() => handleUpgrade("Yearly")}>
-          Yearly 💳
-        </button>
+        <button style={btn} onClick={() => handleUpgrade("Monthly")}>Monthly 💳</button>
+        <button style={btn} onClick={() => handleUpgrade("Yearly")}>Yearly 💳</button>
       </>
     )}
 
     <hr />
 
-    {/* ❤️ Charity */}
-    <h4>Select Charity</h4>
-    <select
-      style={input}
-      value={charity}
-      onChange={(e) => setCharity(e.target.value)}
-    >
+    <select style={input} value={charity} onChange={(e) => setCharity(e.target.value)}>
       <option value="">Choose</option>
       <option value="Education">Education</option>
       <option value="Health">Health</option>
       <option value="Environment">Environment</option>
     </select>
 
-    <button style={btn} onClick={handleCharity}>
-      Save Charity
-    </button>
+    <button style={btn} onClick={handleCharity}>Save Charity</button>
 
     <hr />
 
-    {/* 🎲 Draw */}
-    <button style={btnPrimary} onClick={handleDraw}>
-      Run Draw 🎲
-    </button>
+    <button style={btnPrimary} onClick={handleDraw}>Run Draw 🎲</button>
 
     {drawResult && (
-      <div style={{ marginTop: "10px" }}>
-        <p><b>Draw:</b> {drawResult.drawNumbers.join(", ")}</p>
-        <p><b>Matches:</b> {drawResult.matches.join(", ")}</p>
-        <p><b>Total:</b> {drawResult.matchCount}</p>
-
-        {drawResult.matchCount >= 3 && (
-          <p style={{ color: "green" }}>🎉 You Won!</p>
-        )}
+      <div>
+        <p>{drawResult.drawNumbers.join(", ")}</p>
+        <p>{drawResult.matches.join(", ")}</p>
       </div>
     )}
 
     <hr />
 
-    {/* 👨‍💼 ADMIN BUTTON */}
-    {user && user.isAdmin === true && (
-      <>
-        <button
-          style={{ ...btn, background: "#000", color: "#fff" }}
-          onClick={() => window.location.href = "/admin"}
-        >
-          Go to Admin Panel 👨‍💼
-        </button>
-        <hr />
-      </>
+    {user?.isAdmin && (
+      <button onClick={() => window.location.href = "/admin"}>
+        Admin Panel
+      </button>
     )}
 
-    {/* Score */}
-    <input
-      style={input}
-      type="number"
-      value={value}
-      placeholder="Enter Score"
-      onChange={(e) => setValue(e.target.value)}
-    />
+    <input style={input} type="number" value={value} onChange={(e) => setValue(e.target.value)} />
 
-    <button style={btn} onClick={handleAddScore}>
-      Add Score
-    </button>
+    <button style={btn} onClick={handleAddScore}>Add Score</button>
 
-    <h4>Your Scores</h4>
-    {scores.length === 0 ? (
-      <p>No scores yet</p>
-    ) : (
-      scores.map((s) => (
-        <p key={s._id}>
-          {s.value} • {new Date(s.date).toLocaleDateString()}
-        </p>
-      ))
-    )}
+    {scores.map((s) => (
+      <p key={s._id}>{s.value}</p>
+    ))}
 
-    <button
-      style={{ ...btn, background: "red", color: "#fff" }}
-      onClick={handleLogout}
-    >
+    <button style={{ ...btn, background: "red", color: "#fff" }} onClick={handleLogout}>
       Logout
     </button>
 
