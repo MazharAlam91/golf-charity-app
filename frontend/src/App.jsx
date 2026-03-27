@@ -52,27 +52,32 @@ const navigate = useNavigate();
 const API = import.meta.env.VITE_API_URL;
 
 const handleLogin = async () => {
-try {
-const res = await axios.post(
-`${API}/api/auth/login`,
-{ email, password }
-);
+if (!email || !password) {
+return alert("Please fill all fields ⚠️");
+}
 
 ```
+try {
+  const res = await axios.post(
+    `${API}/api/auth/login`,
+    { email, password }
+  );
+
   localStorage.setItem("token", res.data.token);
   localStorage.setItem("user", JSON.stringify(res.data.user));
 
   alert("Login Successful 🚀");
 
   // 👨‍💼 ADMIN REDIRECT
-  if (res.data.user.isAdmin) {
+  if (res.data.user?.isAdmin) {
     navigate("/admin");
   } else {
     navigate("/dashboard");
   }
 
-} catch {
-  alert("Login Failed ❌");
+} catch (err) {
+  console.error(err);
+  alert(err.response?.data?.msg || "Login Failed ❌");
 }
 ```
 
@@ -85,6 +90,7 @@ return ( <div style={container}> <div style={card}> <h2>Login 🔐</h2>
       style={input}
       type="email"
       placeholder="Enter Email"
+      value={email}
       onChange={(e) => setEmail(e.target.value)}
     />
 
@@ -92,6 +98,7 @@ return ( <div style={container}> <div style={card}> <h2>Login 🔐</h2>
       style={input}
       type="password"
       placeholder="Enter Password"
+      value={password}
       onChange={(e) => setPassword(e.target.value)}
     />
 
